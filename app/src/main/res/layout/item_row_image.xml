@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
@@ -14,13 +16,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp"
-        android:layout_margin="8dp"
-        tools:ignore="UseCompoundDrawables">
+        android:layout_margin="8dp">
 
         <ImageView
             android:id="@+id/item_Image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:clickable="false"
+            android:focusable="false"
             android:contentDescription="@string/title_image"
             android:src="@drawable/baseline_image_24" />
 
@@ -32,7 +35,7 @@
             android:text="@string/judul_event"
             android:textColor="@color/card_text_color"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

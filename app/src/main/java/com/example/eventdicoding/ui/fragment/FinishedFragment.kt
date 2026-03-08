@@ -6,13 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eventdicoding.databinding.FragmentFinishedBinding
 import com.example.eventdicoding.ui.detail.DetailActivity
 import com.example.eventdicoding.vmodel.EventAdapter
 import com.example.eventdicoding.vmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class FinishedFragment : Fragment() {
 
@@ -33,36 +31,43 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Setup RecyclerView
-        setupRecyclerView()
-
-        // Setup ViewModel
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        // Observe LiveData for the list of events
-        mainViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            eventAdapter.submitList(events)
+        val adapter = EventAdapter(requireContext()) { clickedEvent ->
+            val intent = android.content.Intent(requireContext(), com.example.eventdicoding.ui.detail.DetailActivity::class.java)
+            intent.putExtra("EVENT_ID", clickedEvent.id)
+            startActivity(intent)
         }
 
-        // Observe loading state
-        mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
-        }
+        binding.recycleApiFinish.layoutManager = LinearLayoutManager(requireContext())
+        binding.recycleApiFinish.adapter = adapter
 
-        // Observe error messages
-        mainViewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                // Use Snackbar to display error message
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+        val apiService = com.example.eventdicoding.retrofit.APIConfig.create()
+        val repository = com.example.eventdicoding.data.response.EventRepository.getInstance(apiService)
+        val factory = com.example.eventdicoding.vmodel.ViewModelFactory.getInstance(repository)
+        mainViewModel = androidx.lifecycle.ViewModelProvider(this, factory)[com.example.eventdicoding.vmodel.MainViewModel::class.java]
+
+        mainViewModel.finishedEvents.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is com.example.eventdicoding.data.response.Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is com.example.eventdicoding.data.response.Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        adapter.submitList(result.data)
+                    }
+                    is com.example.eventdicoding.data.response.Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        android.widget.Toast.makeText(requireContext(), result.error, android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
 
     private fun setupRecyclerView() {
         eventAdapter = EventAdapter(requireContext()) { event ->
-            // Handle event click, navigate to DetailActivity
             val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                putExtra("event", event) // Ensure 'event' matches the model data being sent
+                putExtra("event", event)
             }
             startActivity(intent)
         }

@@ -1,19 +1,16 @@
 package com.example.eventdicoding.retrofit
 
-import retrofit2.Call
 import com.example.eventdicoding.data.response.EventResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface APIService {
     @GET("events")
-    fun getEvents(
-        @Query("active") active: Int
-    ): Call<EventResponse>
+    suspend fun getEvents(@Query("active") active: Int): EventResponse
 
     @GET("events")
-    fun searchEvents(
+    suspend fun searchEvents(
         @Query("active") active: Int = -1,
         @Query("q") query: String
-    ): Call<EventResponse>
+    ): EventResponse
 }

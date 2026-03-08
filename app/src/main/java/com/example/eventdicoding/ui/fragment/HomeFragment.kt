@@ -1,22 +1,23 @@
 package com.example.eventdicoding.ui.fragment
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.eventdicoding.data.response.EventRepository
+import com.example.eventdicoding.data.response.Result
 import com.example.eventdicoding.databinding.FragmentHomeBinding
+import com.example.eventdicoding.retrofit.APIConfig
 import com.example.eventdicoding.ui.detail.DetailActivity
 import com.example.eventdicoding.vmodel.EventAdapter
 import com.example.eventdicoding.vmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
+import com.example.eventdicoding.vmodel.ViewModelFactory
 
 class HomeFragment : Fragment() {
 
@@ -24,127 +25,114 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var activeEventAdapter: EventAdapter
-    private lateinit var finishedEventAdapter: EventAdapter
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var themeListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var activeAdapter: EventAdapter
+    private lateinit var finishedAdapter: EventAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        sharedPreferences = requireActivity().getSharedPreferences("ThemePref", Context.MODE_PRIVATE)
-
-        // Listener untuk memantau perubahan pada tema
-        themeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "isDarkMode") {
-                applyTheme()
-            }
-        }
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(themeListener)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        val apiService = APIConfig.create()
+        val repository = EventRepository.getInstance(apiService)
+        val factory = ViewModelFactory.getInstance(repository)
+        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
 
-        // Setup RecyclerView
-        setupRecyclerViews()
-
-        // Setup SearchView
-        setupSearchView()
-
-        // Observe data from ViewModel
-        mainViewModel.activeEvents.observe(viewLifecycleOwner) { events ->
-            activeEventAdapter.submitList(events)
-        }
-
-        mainViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            finishedEventAdapter.submitList(events)
-        }
-
-        mainViewModel.searchResults.observe(viewLifecycleOwner) { searchResults ->
-            activeEventAdapter.submitList(searchResults)
-        }
-
-        mainViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
-        }
-
-        mainViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
-            }
-        }
-
-        // Fetch initial data
-        mainViewModel.fetchEvents(1)
-        mainViewModel.fetchEvents(0)
-
-        // Apply the current theme based on saved preference
-        applyTheme()
-    }
-
-    private fun applyTheme() {
-        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-    }
-
-    private fun setupRecyclerViews() {
-        // Inisialisasi adapter untuk event aktif (horizontal)
-        activeEventAdapter = EventAdapter(requireContext()) { event ->
-            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                putExtra("event", event)
-            }
+        activeAdapter = EventAdapter(requireContext()) { clickedEvent ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra(DetailActivity.EVENT_KEY, clickedEvent)
             startActivity(intent)
         }
-        binding.recyclerViewActiveEvents.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerViewActiveEvents.adapter = activeEventAdapter
+        binding.recyclerViewActiveEvents.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerViewActiveEvents.adapter = activeAdapter
 
-        // Inisialisasi adapter untuk event selesai (vertikal)
-        finishedEventAdapter = EventAdapter(requireContext()) { event ->
-            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                putExtra("event", event)
-            }
+        finishedAdapter = EventAdapter(requireContext()) { clickedEvent ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra(DetailActivity.EVENT_KEY, clickedEvent)
             startActivity(intent)
         }
-        binding.recyclerViewFinishedEvents.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewFinishedEvents.adapter = finishedEventAdapter
-    }
+        binding.recyclerViewFinishedEvents.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewFinishedEvents.adapter = finishedAdapter
 
-    private fun setupSearchView() {
+        mainViewModel.activeEvents.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        activeAdapter.submitList(result.data.take(5))
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        mainViewModel.finishedEvents.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        finishedAdapter.submitList(result.data.take(5))
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    mainViewModel.searchEvents(it) // Panggil searchEvents dengan query
+                if (!query.isNullOrEmpty()) {
+                    mainViewModel.searchEvents(query)
                 }
-                return false
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false // Kita tidak melakukan pencarian di sini
+                if (newText.isNullOrEmpty()) {
+                    binding.tvActiveEvents.text = "Upcoming Events"
+                    binding.recyclerViewFinishedEvents.visibility = View.VISIBLE
+                    binding.tvFinishedEvents.visibility = View.VISIBLE
+                    mainViewModel.fetchEvents(1)
+                }
+                return false
             }
         })
-    }
 
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        mainViewModel.searchResults.observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.tvFinishedEvents.visibility = View.GONE
+                        binding.recyclerViewFinishedEvents.visibility = View.GONE
+                        binding.tvActiveEvents.text = "Hasil Pencarian"
+                        activeAdapter.submitList(result.data)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(themeListener)
         _binding = null
     }
 }

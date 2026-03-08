@@ -18,7 +18,7 @@ object APIConfig {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL) // Mengambil BASE_URL dari BuildConfig
+        .baseUrl(BuildConfig.BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

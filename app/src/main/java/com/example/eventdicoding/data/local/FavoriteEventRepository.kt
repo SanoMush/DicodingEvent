@@ -36,7 +36,6 @@ class FavoriteEventRepository(context: Context) {
         @Volatile
         private var instance: FavoriteEventRepository? = null
 
-        // Ensure this method only takes Application as a parameter
         fun getInstance(context: Context): FavoriteEventRepository =
             instance ?: synchronized(this) {
                 instance ?: FavoriteEventRepository(context)

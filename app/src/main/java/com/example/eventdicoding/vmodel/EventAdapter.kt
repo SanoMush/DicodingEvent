@@ -27,6 +27,7 @@ class EventAdapter(
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = events[position]
+
         holder.itemText.text = event.name
 
         Glide.with(context)
@@ -58,6 +59,7 @@ class EventAdapter(
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldList.size
+
         override fun getNewListSize(): Int = newList.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

@@ -32,11 +32,9 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize FavoriteEventRepository
         favoriteEventRepository = FavoriteEventRepository.getInstance(this)
         fabFavorite = binding.fabFav
 
-        // Get the event object and determine its type
         val event = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EVENT_KEY, ListEventsItem::class.java)
                 ?: intent.getParcelableExtra(EVENT_KEY, FavoriteEventEntity::class.java)
@@ -58,7 +56,6 @@ class DetailActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            // Check initial favorite status
             val eventId = when (event) {
                 is ListEventsItem -> event.id.toString()
                 is FavoriteEventEntity -> event.id
@@ -67,8 +64,6 @@ class DetailActivity : AppCompatActivity() {
 
             eventId?.let { checkFavoriteStatus(it) }
 
-
-            // Handle click on FloatingActionButton
             fabFavorite.setOnClickListener {
                 isFavorite = !isFavorite
                 if (event is ListEventsItem) {
@@ -103,7 +98,7 @@ class DetailActivity : AppCompatActivity() {
     private fun setupUIWithFavoriteEventEntity(event: FavoriteEventEntity) {
         with(binding) {
             tvDetailName.text = event.name
-            tvDetailOwnername.text = "" // Adjust for missing data in FavoriteEventEntity
+            tvDetailOwnername.text = ""
             tvDetailBegintime.text = ""
             tvDetailQuota.text = ""
             tvDetailDescription.text = ""
@@ -156,7 +151,6 @@ class DetailActivity : AppCompatActivity() {
     }
 }
 
-// Extension function for ImageView to load image with Glide
 fun ImageView.loadImage(url: String?) {
     Glide.with(this.context)
         .load(url)

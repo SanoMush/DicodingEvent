@@ -2,69 +2,64 @@ package com.example.eventdicoding.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.eventdicoding.R
-import com.example.eventdicoding.data.local.FavoriteEventRepository
+import com.example.eventdicoding.databinding.FragmentFavoriteBinding
 import com.example.eventdicoding.ui.detail.DetailActivity
 import com.example.eventdicoding.vmodel.FavoriteEventAdapter
+import com.example.eventdicoding.vmodel.FavoriteViewModel
 
 class FavoriteFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var favoriteEventAdapter: FavoriteEventAdapter
-    private lateinit var messageTextView: TextView
-    private lateinit var favoriteEventRepository: FavoriteEventRepository
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var favoriteViewModel: FavoriteViewModel
+    private lateinit var adapter: FavoriteEventAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_favorite, container, false)
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        // Initialize views
-        recyclerView = view.findViewById(R.id.rv_favorite)
-        messageTextView = view.findViewById(R.id.message)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Set up RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        favoriteEventAdapter = FavoriteEventAdapter(requireContext()) { favoriteEvent ->
-            Log.d("FavoriteFragment", "Navigating to DetailActivity with: $favoriteEvent")
-            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                putExtra("event", favoriteEvent)
-            }
+        favoriteViewModel = ViewModelProvider(this)[FavoriteViewModel::class.java]
+
+        adapter = FavoriteEventAdapter { clickedEvent ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra(DetailActivity.EVENT_KEY, clickedEvent)
             startActivity(intent)
         }
 
+        binding.rvFavorite.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFavorite.adapter = adapter
 
-        recyclerView.adapter = favoriteEventAdapter
+        // 3. Observe Data dari Database
+        binding.progressBar.visibility = View.VISIBLE
+        favoriteViewModel.getAllFavoriteEvents().observe(viewLifecycleOwner) { favoriteList ->
+            binding.progressBar.visibility = View.GONE
 
-        // Initialize repository
-        favoriteEventRepository = FavoriteEventRepository(requireContext())
+            adapter.submitList(favoriteList)
 
-        // Load favorite events from Room Database
-        loadFavoriteEvents()
-
-        return view
+            if (favoriteList.isEmpty()) {
+                binding.tvEmptyMessage.visibility = View.VISIBLE
+            } else {
+                binding.tvEmptyMessage.visibility = View.GONE
+            }
+        }
     }
 
-    private fun loadFavoriteEvents() {
-        favoriteEventRepository.getAllFavoriteEvent().observe(viewLifecycleOwner, Observer { events ->
-            favoriteEventAdapter.submitList(events)
-
-            // Show message if there are no favorite events
-            if (events.isEmpty()) {
-                messageTextView.visibility = View.VISIBLE
-            } else {
-                messageTextView.visibility = View.GONE
-            }
-        })
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

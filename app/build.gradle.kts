@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.eventdicoding"
-    compileSdk = 34
+    compileSdk = 35
     val baseUrl: String = project.findProperty("BASE_URL") as String? ?: "https://event-api.dicoding.dev/"
 
 
@@ -58,6 +58,7 @@ android {
         implementation(libs.androidx.preference.ktx)
         implementation(libs.androidx.preference)
         implementation(libs.androidx.recyclerview)
+        implementation(libs.androidx.datastore.core.android)
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)
         androidTestImplementation(libs.androidx.espresso.core)
@@ -71,4 +72,8 @@ android {
         implementation(libs.androidx.lifecycle.viewmodel.ktx)
         implementation(libs.androidx.lifecycle.livedata.ktx)
         implementation(libs.androidx.room.ktx)
+        implementation(libs.androidx.datastore.preferences)
+        implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.coroutines.android)
+        implementation(libs.androidx.work.runtime.ktx)
     }

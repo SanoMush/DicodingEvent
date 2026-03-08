@@ -1,16 +1,20 @@
 package com.example.eventdicoding
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.eventdicoding.data.local.SettingPreferences
+import com.example.eventdicoding.data.local.dataStore
 import com.example.eventdicoding.databinding.ActivityMainBinding
+import com.example.eventdicoding.vmodel.SettingViewModel
+import com.example.eventdicoding.vmodel.SettingViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,13 +24,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Load theme preference before setting the content view
-        val sharedPreferences = getSharedPreferences("ThemePref", Context.MODE_PRIVATE)
-        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val pref = SettingPreferences.getInstance(application.dataStore)
+        val factory = SettingViewModelFactory(pref)
+        val settingViewModel = ViewModelProvider(this, factory)[SettingViewModel::class.java]
+
+        settingViewModel.getThemeSettings().observe(this) { isDarkModeActive ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,12 +41,9 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        // Setup NavHostFragment and NavController
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
 
-        // Setup AppBarConfiguration and ActionBar
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
@@ -52,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Menambahkan listener untuk menampilkan tombol back
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isBackButtonVisible = when (destination.id) {
                 R.id.navigation_upcoming,
@@ -61,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_setting -> true
                 else -> false
             }
-
             supportActionBar?.setDisplayHomeAsUpEnabled(isBackButtonVisible)
         }
     }
