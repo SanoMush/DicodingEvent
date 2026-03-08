@@ -1,0 +1,4 @@
+<!-- res/values/attrs.xml -->
+<resources>
+    <attr name="colorBackground" format="reference" />
+</resources>

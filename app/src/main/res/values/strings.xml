@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Dicoding Event</string>
+    <string name="title_home">Home</string>
+    <string name="title_upcoming">Upcoming</string>
+    <string name="title_finished">Finished</string>
+    <string name="judul_event">Your text here</string>
+    <string name="title_name">Nama acara</string>
+    <string name="detail_name">Your text here</string>
+    <string name="title_ownername">Penyelenggara acara</string>
+    <string name="detail_ownername">Your text here</string>
+    <string name="title_begintime">Waktu acara</string>
+    <string name="detail_begintime">Your text here</string>
+    <string name="title_quota">Sisa kuota pendaftar</string>
+    <string name="detail_quota">Your text here</string>
+    <string name="title_description">Deskripsi acara</string>
+    <string name="detail_description">Your text here</string>
+    <string name="title_description_people">Jika Anda tertarik, silahkan daftar dengan menekan tombol daftar dibawah ini !</string>
+    <string name="btn_link">Daftar</string>
+    <string name="title_active_event">Active Events</string>
+    <string name="title_Finished_event">Finished Events</string>
+    <string name="title_image">Gambar</string>
+    <string name="event_subtitle">Event Subtitle</string>
+    <string name="quota_left">%d tersisa</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_setting">Setting</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="save_favorite">Save Favorite</string>
+    <string name="image_logo">Image Logo</string>
+</resources>

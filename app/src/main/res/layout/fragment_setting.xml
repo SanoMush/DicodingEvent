@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="?attr/colorBackground">
+
+    <!-- Title or Label for Settings -->
+
+    <!-- Dark Mode Switch Label -->
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Settings"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Switch for Dark/Light Mode -->
+
+    <TextView
+        android:id="@+id/textViewDarkMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTitle"
+        android:layout_marginTop="53dp"
+        android:text="Dark Mode"
+        android:textSize="18sp" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchDarkMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTitle"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="239dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+
+        />
+
+
+</RelativeLayout>
