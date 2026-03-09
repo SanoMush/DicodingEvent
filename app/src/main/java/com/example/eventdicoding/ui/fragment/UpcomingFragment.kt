@@ -37,7 +37,7 @@ class UpcomingFragment : Fragment() {
 
         adapter = EventAdapter(requireContext()) { clickedEvent ->
             val intent = android.content.Intent(requireContext(), com.example.eventdicoding.ui.detail.DetailActivity::class.java)
-            intent.putExtra("EVENT_ID", clickedEvent.id)
+            intent.putExtra("event", clickedEvent)
             startActivity(intent)
         }
 

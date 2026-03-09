@@ -30,6 +30,7 @@ datastoreCoreAndroid = "1.2.0"
 workRuntimeKtx = "2.8.1"
 
 
+
 [libraries]
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardviewVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

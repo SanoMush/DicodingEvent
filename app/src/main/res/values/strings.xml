@@ -18,9 +18,9 @@
     <string name="btn_link">Daftar</string>
     <string name="title_active_event">Active Events</string>
     <string name="title_Finished_event">Finished Events</string>
-    <string name="title_image">Gambar</string>
+    <string name="title_image">Image</string>
     <string name="event_subtitle">Event Subtitle</string>
-    <string name="quota_left">%d tersisa</string>
+    <string name="quota_left">%d left</string>
 
 
     <!-- Preference Titles -->

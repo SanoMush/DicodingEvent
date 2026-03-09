@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.eventdicoding"
-    compileSdk = 35
+    compileSdk = 36
     val baseUrl: String = project.findProperty("BASE_URL") as String? ?: "https://event-api.dicoding.dev/"
 
 

@@ -18,6 +18,7 @@ class FinishedFragment : Fragment() {
     private val binding get() = _binding ?: throw IllegalStateException("Binding should not be accessed when it is null")
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var adapter: EventAdapter
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
@@ -31,9 +32,12 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = EventAdapter(requireContext()) { clickedEvent ->
-            val intent = android.content.Intent(requireContext(), com.example.eventdicoding.ui.detail.DetailActivity::class.java)
-            intent.putExtra("EVENT_ID", clickedEvent.id)
+        adapter = EventAdapter(requireContext()) { clickedEvent ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+
+
+            intent.putExtra(DetailActivity.EVENT_KEY, clickedEvent)
+
             startActivity(intent)
         }
 
