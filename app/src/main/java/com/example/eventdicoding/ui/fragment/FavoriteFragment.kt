@@ -43,7 +43,6 @@ class FavoriteFragment : Fragment() {
         binding.rvFavorite.layoutManager = LinearLayoutManager(requireContext())
         binding.rvFavorite.adapter = adapter
 
-        // 3. Observe Data dari Database
         binding.progressBar.visibility = View.VISIBLE
         favoriteViewModel.getAllFavoriteEvents().observe(viewLifecycleOwner) { favoriteList ->
             binding.progressBar.visibility = View.GONE

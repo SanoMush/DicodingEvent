@@ -51,9 +51,18 @@ class DetailActivity : AppCompatActivity() {
             }
 
             binding.btnDetailSign.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse((event as? ListEventsItem)?.link)
-                startActivity(intent)
+                val linkUrl = when (event) {
+                    is ListEventsItem -> event.link
+                    is FavoriteEventEntity -> event.link
+                    else -> null
+                }
+
+                if (!linkUrl.isNullOrEmpty()) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl))
+                    startActivity(intent)
+                } else {
+                    Snackbar.make(binding.root, "Link pendaftaran tidak tersedia", Snackbar.LENGTH_SHORT).show()
+                }
             }
 
             val eventId = when (event) {
@@ -98,10 +107,13 @@ class DetailActivity : AppCompatActivity() {
     private fun setupUIWithFavoriteEventEntity(event: FavoriteEventEntity) {
         with(binding) {
             tvDetailName.text = event.name
-            tvDetailOwnername.text = ""
-            tvDetailBegintime.text = ""
-            tvDetailQuota.text = ""
-            tvDetailDescription.text = ""
+            tvDetailOwnername.text = event.ownerName
+            tvDetailBegintime.text = event.beginTime
+            tvDetailQuota.text = getString(
+                R.string.quota_left,
+                event.quota - event.registrants
+            )
+            tvDetailDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
             ivImageUpcoming.loadImage(event.imageLogo)
         }
     }
@@ -125,8 +137,14 @@ class DetailActivity : AppCompatActivity() {
         if (isFavorite) {
             val favoriteEventEntity = FavoriteEventEntity(
                 id = event.id.toString(),
-                name = event.name,
-                imageLogo = event.imageLogo
+                name = event.name ?: "",
+                ownerName = event.ownerName ?: "",
+                beginTime = event.beginTime ?: "",
+                quota = event.quota ?: 0,
+                registrants = event.registrants ?: 0,
+                description = event.description ?: "",
+                imageLogo = event.imageLogo ?: event.mediaCover ?: "",
+                link = event.link ?: ""
             )
             favoriteEventRepository.insertEvent(favoriteEventEntity)
         } else {

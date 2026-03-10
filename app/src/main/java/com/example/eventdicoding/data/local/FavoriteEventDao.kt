@@ -10,10 +10,11 @@ import androidx.room.Query
 @Dao
 interface FavoriteEventDao {
 
-    @Query("SELECT * FROM FavoriteEventEntity ORDER BY id ASC")
+
+    @Query("SELECT * FROM favorite_events ORDER BY id ASC")
     fun getAllFavorite(): LiveData<List<FavoriteEventEntity>>
 
-    @Query("SELECT * FROM FavoriteEventEntity WHERE id = :id")
+    @Query("SELECT * FROM favorite_events WHERE id = :id")
     fun getFavoriteEventById(id: String): LiveData<FavoriteEventEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -21,5 +22,4 @@ interface FavoriteEventDao {
 
     @Delete
     fun delete(favoriteEventEntity: FavoriteEventEntity)
-
 }
