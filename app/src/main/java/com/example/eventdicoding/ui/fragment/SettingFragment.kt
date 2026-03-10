@@ -1,10 +1,14 @@
 package com.example.eventdicoding.ui.fragment
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.Constraints
@@ -25,6 +29,17 @@ class SettingFragment : Fragment() {
 
     private lateinit var workManager: WorkManager
     private val periodicWorkName = "daily_reminder_event"
+    private lateinit var switchReminder: SwitchMaterial
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                startPeriodicTask()
+            } else {
+                Toast.makeText(requireContext(), "Notifikasi tidak diizinkan", Toast.LENGTH_SHORT).show()
+                switchReminder.isChecked = false
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +52,7 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val switchTheme = view.findViewById<SwitchMaterial>(R.id.switchDarkMode)
-        val switchReminder = view.findViewById<SwitchMaterial>(R.id.switchDailyReminder)
+        switchReminder = view.findViewById(R.id.switchDailyReminder)
 
         val pref = SettingPreferences.getInstance(requireActivity().application.dataStore)
         val factory = SettingViewModelFactory(pref)
@@ -57,10 +72,12 @@ class SettingFragment : Fragment() {
         switchReminder.isChecked = prefs.getBoolean("isReminderActive", false)
 
         switchReminder.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("isReminderActive", isChecked).apply()
-
             if (isChecked) {
-                startPeriodicTask()
+                if (Build.VERSION.SDK_INT >= 33) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    startPeriodicTask()
+                }
             } else {
                 cancelPeriodicTask()
             }
@@ -68,6 +85,9 @@ class SettingFragment : Fragment() {
     }
 
     private fun startPeriodicTask() {
+        val prefs = requireActivity().getSharedPreferences("ReminderPref", 0)
+        prefs.edit().putBoolean("isReminderActive", true).apply()
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -84,9 +104,14 @@ class SettingFragment : Fragment() {
             ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
+        Toast.makeText(requireContext(), "Daily Reminder Diaktifkan", Toast.LENGTH_SHORT).show()
     }
 
     private fun cancelPeriodicTask() {
+        val prefs = requireActivity().getSharedPreferences("ReminderPref", 0)
+        prefs.edit().putBoolean("isReminderActive", false).apply()
+
         workManager.cancelUniqueWork(periodicWorkName)
+        Toast.makeText(requireContext(), "Daily Reminder Dimatikan", Toast.LENGTH_SHORT).show()
     }
 }

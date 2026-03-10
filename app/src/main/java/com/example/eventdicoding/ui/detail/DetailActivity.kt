@@ -23,10 +23,6 @@ class DetailActivity : AppCompatActivity() {
     private var isFavorite = false
     private lateinit var favoriteEventRepository: FavoriteEventRepository
 
-    companion object {
-        const val EVENT_KEY = "event"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -61,7 +57,7 @@ class DetailActivity : AppCompatActivity() {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl))
                     startActivity(intent)
                 } else {
-                    Snackbar.make(binding.root, "Link pendaftaran tidak tersedia", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root,getString(R.string.link_notavailable), Snackbar.LENGTH_SHORT).show()
                 }
             }
 
@@ -166,6 +162,10 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val EVENT_KEY = "event"
     }
 }
 

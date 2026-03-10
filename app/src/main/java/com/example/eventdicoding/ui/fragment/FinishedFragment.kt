@@ -68,17 +68,6 @@ class FinishedFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView() {
-        eventAdapter = EventAdapter(requireContext()) { event ->
-            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-                putExtra("event", event)
-            }
-            startActivity(intent)
-        }
-        binding.recycleApiFinish.layoutManager = LinearLayoutManager(context)
-        binding.recycleApiFinish.adapter = eventAdapter
-    }
-
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }

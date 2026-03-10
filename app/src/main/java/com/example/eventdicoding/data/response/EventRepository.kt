@@ -26,7 +26,6 @@ class EventRepository private constructor(private val apiService: APIService) {
     }
 
     private fun handleException(e: Exception): String {
-        Log.e("EventRepository", "Error: ${e.message}")
         return when (e) {
             is UnknownHostException -> "Maaf, tidak ada koneksi internet."
             is SocketTimeoutException -> "Koneksi internet Anda terlalu lambat."

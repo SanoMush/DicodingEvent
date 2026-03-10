@@ -25,17 +25,18 @@
             android:clickable="false"
             android:focusable="false"
             android:contentDescription="@string/title_image"
-            android:src="@drawable/baseline_image_24" />
+            android:src="@drawable/baseline_image_24"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/item_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/judul_event"
             android:textColor="@color/card_text_color"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="Dicoding Developer Day"/>
 
     </LinearLayout>
 

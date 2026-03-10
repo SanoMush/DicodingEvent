@@ -41,8 +41,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_image_upcoming"
             app:layout_constraintEnd_toEndOf="@id/iv_image_upcoming"/>
 
-
-
+        <!-- LABEL -->
         <TextView
             android:id="@+id/detail_name"
             android:layout_width="0dp"
@@ -52,24 +51,25 @@
             android:text="@string/title_name"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image_upcoming"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_image_upcoming"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Event Name" />
 
+        <!-- DATA API -->
         <TextView
             android:id="@+id/tv_detail_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/detail_name"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_name"
-            tools:text="Event Detail Name" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Dicoding Developer Day" />
 
+        <!-- LABEL -->
         <TextView
             android:id="@+id/detail_owner"
             android:layout_width="0dp"
@@ -79,23 +79,23 @@
             android:text="@string/title_ownername"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_name"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Owner Name" />
 
+        <!-- DATA -->
         <TextView
             android:id="@+id/tv_detail_ownername"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/detail_name"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_owner"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_owner"
-            tools:text="Owner Detail Name" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Dicoding Indonesia" />
 
         <TextView
             android:id="@+id/detail_begintime"
@@ -106,9 +106,9 @@
             android:text="@string/title_begintime"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_ownername"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_ownername"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Begin Time" />
 
         <TextView
@@ -117,11 +117,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/detail_begintime"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_begintime"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_begintime"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="10:00 AM" />
 
         <TextView
@@ -133,9 +132,9 @@
             android:text="@string/title_quota"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_begintime"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_begintime"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Quota" />
 
         <TextView
@@ -144,11 +143,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/detail_quota"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_quota"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_quota"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="100" />
 
         <TextView
@@ -160,10 +158,11 @@
             android:text="@string/title_description"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_quota"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_quota"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Description" />
+
 
         <TextView
             android:id="@+id/tv_detail_description"
@@ -171,11 +170,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/detail_description"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detail_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Event description goes here." />
 
         <TextView
@@ -186,26 +184,24 @@
             android:padding="8dp"
             android:text="@string/title_description_people"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_description"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="Participants" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_detail_sign"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_margin="16dp"
             android:text="@string/btn_link"
             android:textColor="@color/teal_700"
             android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/detail_description_people"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description_people" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>
